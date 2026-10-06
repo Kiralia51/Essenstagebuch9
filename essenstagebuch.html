@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mein Essenstagebuch</title>
+<link href="https://fonts.googleapis.com/css2?family=Literata:opsz,wght@7..72,500;7..72,600&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--k1:#1E7F86;--k2:#C2540C;--k3:#B83280;--k4:#5B4BC4;--k5:#2F855A;--k6:#9A6200;--k7:#2B6CB0;--k8:#C0475F;
+--t1:#D9F0F1;--t2:#FDE6D3;--t3:#F9DDEC;--t4:#E6E2FA;--t5:#D8F1E2;--t6:#FBEBC8;--t7:#D9E8F8;--t8:#F9DDE3;--on:#fff;
+--bg:#F3F0F8;--card:#FFFFFF;--ink:#1F2D3A;--mute:#5F6E7A;--line:#D5DEDC;--acc:#2F6F73;--acc-ink:#fff;--chip:#E3EBEA;--feel:#7B4F76;--feel-bg:#F0E6EF;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--k1:#6FD0D6;--k2:#F0A06A;--k3:#EE9CCB;--k4:#B3A8F5;--k5:#7FD6A5;--k6:#E8C06A;--k7:#8DBDEF;--k8:#F0A0B0;
+--t1:#1C3B3F;--t2:#46301F;--t3:#46283A;--t4:#2E2A4F;--t5:#1F3F2E;--t6:#443716;--t7:#1F3450;--t8:#472A31;--on:#141C22;--bg:#141C22;--card:#1D2830;--ink:#E6EDEF;--mute:#9AA8B1;--line:#30404A;--acc:#6FB7B9;--acc-ink:#0F1A1F;--chip:#27353E;--feel:#D3A6CE;--feel-bg:#3A2B38}}
+:root[data-theme="dark"]{--k1:#6FD0D6;--k2:#F0A06A;--k3:#EE9CCB;--k4:#B3A8F5;--k5:#7FD6A5;--k6:#E8C06A;--k7:#8DBDEF;--k8:#F0A0B0;
+--t1:#1C3B3F;--t2:#46301F;--t3:#46283A;--t4:#2E2A4F;--t5:#1F3F2E;--t6:#443716;--t7:#1F3450;--t8:#472A31;--on:#141C22;--bg:#141C22;--card:#1D2830;--ink:#E6EDEF;--mute:#9AA8B1;--line:#30404A;--acc:#6FB7B9;--acc-ink:#0F1A1F;--chip:#27353E;--feel:#D3A6CE;--feel-bg:#3A2B38}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16px/1.55 Figtree,system-ui,sans-serif}
+main{max-width:560px;margin:0 auto;padding:0 16px 48px}
+.daynav{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;align-items:center;gap:8px;background:var(--bg);padding:8px 0 12px}
+.daynav #daylabel{flex:1;text-align:center;line-height:1.25}
+.daynav #daylabel strong{display:block;font-family:Literata,Georgia,serif;font-size:18px}
+.daynav button{width:48px;padding:0;font-size:26px;line-height:1}
+.daynav .today{width:auto;margin:0;padding:0 14px;font-size:15px;min-height:44px}
+.daynav button:disabled{opacity:.35;cursor:default}
+.stripe{height:8px;margin:0 -16px 8px;background:linear-gradient(90deg,var(--k1) 0 20%,var(--k5) 20% 40%,var(--k6) 40% 60%,var(--k2) 60% 80%,var(--k3) 80% 100%)}
+h1,h2{font-family:Literata,Georgia,serif;font-weight:600;line-height:1.25;margin:0}
+h1{font-size:28px;margin-bottom:4px}
+h2{font-size:20px;margin-bottom:12px}
+.sub{color:var(--mute);margin:0 0 20px}
+section{background:var(--card);border:1px solid var(--line);border-top:6px solid var(--k1);border-radius:16px;padding:18px;margin-bottom:18px}
+section.s2{border-top-color:var(--k6)}
+section.s3{border-top-color:var(--k3)}
+section.essanfall{background:#F3F0FA !important;border-top:6px solid #B97FD4 !important;border-color:#B97FD4 !important}
+section.essanfall label{color:#2D1F3D !important}
+label,.q{display:block;font-weight:600;margin:16px 0 8px}
+label:first-of-type,.q:first-of-type{margin-top:0}
+.hint{font-weight:400;color:var(--mute);font-size:14px}
+textarea,input[type=text],input[type=datetime-local]{width:100%;font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+textarea{min-height:76px;resize:vertical}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips input{position:absolute;opacity:0;pointer-events:none}
+.chips label{margin:0;font-weight:500;background:var(--chip);border:1px solid transparent;border-radius:999px;padding:8px 14px;cursor:pointer;min-height:40px;display:inline-flex;align-items:center}
+.chips label{background:var(--ct,var(--chip));color:var(--ink)}
+.chips label:nth-of-type(8n+1){--cc:var(--k1);--ct:var(--t1)}
+.chips label:nth-of-type(8n+2){--cc:var(--k2);--ct:var(--t2)}
+.chips label:nth-of-type(8n+3){--cc:var(--k3);--ct:var(--t3)}
+.chips label:nth-of-type(8n+4){--cc:var(--k4);--ct:var(--t4)}
+.chips label:nth-of-type(8n+5){--cc:var(--k5);--ct:var(--t5)}
+.chips label:nth-of-type(8n+6){--cc:var(--k6);--ct:var(--t6)}
+.chips label:nth-of-type(8n+7){--cc:var(--k7);--ct:var(--t7)}
+.chips label:nth-of-type(8n+8){--cc:var(--k8);--ct:var(--t8)}
+.chips input:checked+label{background:var(--cc);color:var(--on);border-color:var(--cc)}
+.chips input:focus-visible+label{outline:3px solid var(--acc);outline-offset:2px}
+button{font:inherit;font-weight:600;border:0;border-radius:12px;padding:12px 18px;cursor:pointer;min-height:44px}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.primary{background:var(--k4);color:var(--on);width:100%;margin-top:18px}
+.ghost{background:var(--chip);color:var(--ink)}
+.small{padding:6px 10px;min-height:32px;font-size:14px;font-weight:500}
+.day{font-family:Literata,Georgia,serif;font-size:15px;color:var(--k4);font-weight:600;margin:18px 0 8px}
+.c0{--cc:var(--k1);--ct:var(--t1)}.c1{--cc:var(--k2);--ct:var(--t2)}.c2{--cc:var(--k3);--ct:var(--t3)}.c3{--cc:var(--k4);--ct:var(--t4)}.c4{--cc:var(--k5);--ct:var(--t5)}.c5{--cc:var(--k6);--ct:var(--t6)}.c6{--cc:var(--k7);--ct:var(--t7)}.c7{--cc:var(--k8);--ct:var(--t8)}
+.entry{border-top:1px solid var(--line);padding:12px 0}
+.entry:first-of-type{border-top:0}
+.row{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.meta{color:var(--mute);font-size:14px}
+.tag{display:inline-block;background:var(--ct);color:var(--ink);border-left:4px solid var(--cc);border-radius:999px;padding:2px 10px;font-size:14px;margin:6px 6px 0 0}
+.note{margin:6px 0 0;font-size:15px}
+.empty{color:var(--mute);margin:0}
+.pat li{margin:0 0 8px}
+.pat{padding-left:18px;margin:0}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<main>
+  <div class="stripe" aria-hidden="true"></div>
+  <nav class="daynav" aria-label="Tag wählen">
+    <button class="ghost" id="dprev" type="button" aria-label="Vorheriger Tag">&#8249;</button>
+    <div id="daylabel" aria-live="polite"></div>
+    <button class="ghost" id="dnext" type="button" aria-label="Nächster Tag">&#8250;</button>
+    <button class="primary today" id="dtoday" type="button">Heute</button>
+  </nav>
+  <h1>Mein Essenstagebuch</h1>
+  <p class="sub">Halte fest, was du isst und wie es sich anfühlt. Nach ein paar Tagen zeigt sich, was dir guttut. Es gibt kein Richtig oder Falsch, nur Beobachten.</p>
+
+  <p class="meta" id="status"></p>
+  <section aria-labelledby="neu">
+    <h2 id="neu">Neuer Eintrag</h2>
+    <div class="q">Wie geht es dir gerade – vor dem Essen? <span class="hint">Mehrere möglich</span></div>
+    <div class="chips" id="prefeel"></div>
+    <label for="vorgefuehl">Noch etwas? <span class="hint">Freies Feld – z. B. Druck im Bauch, innere Leere…</span></label>
+    <textarea id="vorgefuehl" placeholder="Ein paar Worte genügen" style="min-height:60px"></textarea>
+
+    <label for="food">Was hast du gegessen oder getrunken? <span class="hint">Mehrere Dinge mit Komma trennen</span></label>
+    <input type="text" id="food" placeholder="z. B. Haferbrei, Banane, Kaffee" autocomplete="off">
+
+    <div class="q">Mahlzeit</div>
+    <div class="chips" id="meal"></div>
+
+    <div class="q">Wie war dein Hunger davor?</div>
+    <div class="chips" id="hunger"></div>
+
+    <div class="q">Wie fühlst du dich danach? <span class="hint">Mehrere möglich</span></div>
+    <div class="chips feel" id="feel"></div>
+
+    <label for="when">Wann war das?</label>
+    <input type="datetime-local" id="when">
+
+    <label for="note">Was spürst du im Körper? <span class="hint">Optional, z. B. Bauch, Brust, Schultern</span></label>
+    <textarea id="note" placeholder="Ein paar Worte genügen"></textarea>
+
+    <button class="primary" id="save" type="button">Eintrag speichern</button>
+  </section>
+
+  <section class="essanfall" aria-labelledby="essanfall-titel">
+    <h2 id="essanfall-titel" style="margin-top:0;color:#6B4F8A">🌊 War es ein Essanfall?</h2>
+    <p class="meta" style="margin-bottom:12px">Kein Urteil. Nur Beobachten.</p>
+    <div style="display:flex;gap:12px;margin-bottom:16px">
+      <button type="button" class="ea-toggle" id="ea-ja" onclick="toggleEA('ja')" style="flex:1;padding:10px;border-radius:12px;border:2px solid #B97FD4;background:transparent;color:#6B4F8A;font-size:1rem;cursor:pointer;transition:all 0.2s">Ja</button>
+      <button type="button" class="ea-toggle" id="ea-nein" onclick="toggleEA('nein')" style="flex:1;padding:10px;border-radius:12px;border:2px solid #B97FD4;background:transparent;color:#6B4F8A;font-size:1rem;cursor:pointer;transition:all 0.2s">Nein</button>
+    </div>
+    <div id="ea-felder">
+    <label for="ea-wann">Wann war es?</label>
+    <input type="datetime-local" id="ea-wann">
+    <label for="ea-davor">Was war davor?</label>
+    <textarea id="ea-davor" placeholder="Ein Gefühl, eine Situation, ein Gedanke…" style="min-height:60px"></textarea>
+    <label for="ea-jetzt">Wie fühle ich mich jetzt?</label>
+    <textarea id="ea-jetzt" placeholder="Im Körper, im Kopf, im Herzen…" style="min-height:60px"></textarea>
+    <label for="ea-gut">Was kann ich mir jetzt Gutes tun?</label>
+    <textarea id="ea-gut" placeholder="Auch eine kleine Sache zählt." style="min-height:60px"></textarea>
+    <button class="primary" id="save-ea" type="button" style="margin-top:8px">Speichern</button>
+    </div>
+  </section>
+
+  <section class="s2" aria-labelledby="muster">
+    <h2 id="muster">Muster</h2>
+    <div id="patterns"></div>
+  </section>
+
+  <section class="s3" aria-labelledby="verlauf">
+    <h2 id="verlauf">Verlauf</h2>
+    <div id="list"></div>
+    <div class="bar">
+      <button class="ghost small" id="copy" type="button">Als Text kopieren</button>
+      <button class="ghost small" id="clear" type="button">Alles löschen</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const MEALS=["Frühstück","Mittag","Abendessen","Snack","Getränk"];
+const HUNGER=["Kein Hunger","Etwas","Deutlich","Sehr hungrig"];
+const FEELS=["Satt","Leicht","Energievoll","Zufrieden","Ruhig","Müde","Schwer","Blähbauch","Völlegefühl","Unruhig","Noch hungrig","Übelkeit"];
+const PRE_FEELS=["Druck","Unruhe","Erschöpfung","Müde","Kopfschmerzen","Vorfreude","Langeweile","Traurigkeit"];
+const KEY="essenstagebuch-v1";
+let entries=[];
+try{entries=JSON.parse(localStorage.getItem(KEY)||"[]")}catch(e){entries=[]}
+let gone=[];
+try{gone=JSON.parse(localStorage.getItem(KEY+"-gone")||"[]")}catch(e){gone=[]}
+let ref=null;
+function persist(){
+  try{localStorage.setItem(KEY,JSON.stringify(entries));localStorage.setItem(KEY+"-gone",JSON.stringify(gone))}catch(e){}
+  if(ref){ref.set({entries:JSON.stringify(entries),gone:JSON.stringify(gone)}).catch(()=>setStatus(false))}
+}
+function setStatus(on){const el=document.getElementById("status");if(el)el.textContent=on?"Deine Einträge werden auf diesem Gerät und in deinem Konto gespeichert und bleiben am nächsten Tag da.":"Deine Einträge werden auf diesem Gerät gespeichert und bleiben am nächsten Tag da."}
+async function initSync(){
+  try{
+    if(!window.claude||!claude.use)return;
+    const db=await claude.use("db"),user=await claude.use("user");
+    if(!db||!user)return;
+    const id=await user.id();
+    const r=db.collection("data/users/"+id).doc("diary");
+    const snap=await r.get();
+    let re=[],rg=[];
+    if(snap.exists){const d=snap.data()||{};try{re=JSON.parse(d.entries||"[]")}catch(e){}try{rg=JSON.parse(d.gone||"[]")}catch(e){}}
+    gone=[...new Set([...gone,...rg])];
+    const map={};[...entries,...re].forEach(e=>{if(!gone.includes(e.id))map[e.id]=e});
+    entries=Object.values(map).sort((a,b)=>b.t-a.t);
+    ref=r;persist();render();setStatus(true);
+  }catch(e){}
+}
+const $=id=>document.getElementById(id);
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+
+function chips(el,name,items,type){
+  el.innerHTML=items.map((t,i)=>`<input type="${type}" name="${name}" id="${name}${i}" value="${esc(t)}"><label for="${name}${i}">${esc(t)}</label>`).join("");
+}
+chips($("meal"),"meal",MEALS,"radio");
+chips($("hunger"),"hunger",HUNGER,"radio");
+chips($("prefeel"),"prefeel",PRE_FEELS,"checkbox");
+chips($("feel"),"feel",FEELS,"checkbox");
+
+const val=n=>{const c=document.querySelector(`input[name=${n}]:checked`);return c?c.value:""};
+const vals=n=>[...document.querySelectorAll(`input[name=${n}]:checked`)].map(c=>c.value);
+
+function nowLocal(){const d=new Date();d.setMinutes(d.getMinutes()-d.getTimezoneOffset());return d.toISOString().slice(0,16)}
+function sod(t){const d=new Date(t);d.setHours(0,0,0,0);return d.getTime()}
+let viewDay=sod(Date.now());
+function setDefaultWhen(){
+  const n=new Date(),d=new Date(viewDay);
+  d.setHours(n.getHours(),n.getMinutes(),0,0);
+  d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+  $("when").value=d.toISOString().slice(0,16);
+}
+function goDay(delta){
+  const d=new Date(viewDay);d.setDate(d.getDate()+delta);
+  const nv=sod(d.getTime());
+  if(nv>sod(Date.now()))return;
+  viewDay=nv;setDefaultWhen();render();
+}
+function updateNav(){
+  const today=sod(Date.now()),diff=Math.round((today-viewDay)/86400000);
+  const full=new Date(viewDay).toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"});
+  $("daylabel").innerHTML=diff===0?`<strong>Heute</strong><span class="meta">${esc(full)}</span>`:diff===1?`<strong>Gestern</strong><span class="meta">${esc(full)}</span>`:`<strong>${esc(full)}</strong>`;
+  $("dnext").disabled=diff<=0;$("dtoday").disabled=diff===0;
+}
+$("dprev").onclick=()=>goDay(-1);
+$("dnext").onclick=()=>goDay(1);
+$("dtoday").onclick=()=>{viewDay=sod(Date.now());setDefaultWhen();render()};
+setDefaultWhen();
+function toggleEA(wahl){
+  const ja=$("ea-ja"), nein=$("ea-nein"), felder=$("ea-felder");
+  if(wahl==='ja'){
+    ja.style.background='#B97FD4'; ja.style.color='white';
+    nein.style.background='transparent'; nein.style.color='#6B4F8A';
+    felder.style.display='block';
+    // Uhrzeit vom letzten Eintrag übernehmen, sonst jetzt
+    const last=entries.find(e=>!e.essanfall);
+    if(last){
+      const d=new Date(last.t);
+      d.setMinutes(d.getMinutes()-d.getTimezoneOffset());
+      $("ea-wann").value=d.toISOString().slice(0,16);
+    } else {
+      $("ea-wann").value=nowLocal();
+    }
+  } else {
+    nein.style.background='#B97FD4'; nein.style.color='white';
+    ja.style.background='transparent'; ja.style.color='#6B4F8A';
+    felder.style.display='none';
+  }
+}
+// Felder anfangs verstecken
+document.addEventListener('DOMContentLoaded',()=>{ if($("ea-felder")) $("ea-felder").style.display='none'; });
+
+$("save-ea").onclick=()=>{
+  const davor=$("ea-davor").value.trim();
+  const jetzt=$("ea-jetzt").value.trim();
+  const gut=$("ea-gut").value.trim();
+  if(!davor&&!jetzt&&!gut) return;
+  const t=$("ea-wann").value?new Date($("ea-wann").value).getTime():Date.now();
+  entries.unshift({id:Date.now(),t,essanfall:true,davor,jetzt,gut});
+  entries.sort((a,b)=>b.t-a.t);
+  viewDay=sod(t);
+  persist();
+  $("ea-davor").value="";$("ea-jetzt").value="";$("ea-gut").value="";
+  render();
+};
+
+$("save").onclick=()=>{
+  const food=$("food").value.trim();
+  const feel=vals("feel"),note=$("note").value.trim(),meal=val("meal"),vorgefuehl=$("vorgefuehl").value.trim(),prefeel=vals("prefeel");
+  if(!food&&!feel.length&&!note&&!meal&&!vorgefuehl&&!prefeel.length){$("food").focus();return}
+  const t=$("when").value?new Date($("when").value).getTime():Date.now();
+  entries.unshift({id:Date.now(),t,food,meal,hunger:val("hunger"),feel,note,vorgefuehl,prefeel});
+  entries.sort((a,b)=>b.t-a.t);
+  viewDay=sod(t);
+  persist();
+  $("food").value="";$("note").value="";$("vorgefuehl").value="";setDefaultWhen();
+  document.querySelectorAll("input:checked").forEach(c=>c.checked=false);
+  render();
+};
+
+function dayLabel(t){return new Date(t).toLocaleDateString("de-DE",{weekday:"long",day:"numeric",month:"long"})}
+function timeLabel(t){return new Date(t).toLocaleTimeString("de-DE",{hour:"2-digit",minute:"2-digit"})}
+
+function render(){
+  const list=$("list");
+  updateNav();
+  const shown=entries.filter(e=>sod(e.t)===viewDay);
+  if(!shown.length){list.innerHTML='<p class="empty">'+(entries.length?'Für diesen Tag gibt es keine Einträge.':'Noch nichts eingetragen. Der erste Eintrag ist oben.')+'</p>'}
+  else{
+    let html="",last="";
+    shown.forEach(e=>{
+      const d=dayLabel(e.t);
+      if(d!==last){html+=`<div class="day">${esc(d)}</div>`;last=d}
+      if(e.essanfall){
+        html+=`<div class="entry" style="border-left:4px solid #B97FD4;padding-left:12px;background:#F3F0FA;border-radius:10px"><div class="row"><div><strong style="color:#6B4F8A">🌊 Essanfall</strong><div class="meta">${timeLabel(e.t)}</div></div><button class="ghost small" data-del="${e.id}" aria-label="Eintrag löschen">Löschen</button></div>`
+          +(e.davor?`<p class="note" style="color:#2D1F3D"><em>Davor:</em> ${esc(e.davor)}</p>`:"")
+          +(e.jetzt?`<p class="note" style="color:#2D1F3D"><em>Jetzt:</em> ${esc(e.jetzt)}</p>`:"")
+          +(e.gut?`<p class="note" style="color:#2D1F3D"><em>Gutes tun:</em> ${esc(e.gut)}</p>`:"")+`</div>`;
+      } else {
+        html+=`<div class="entry"><div class="row"><div><strong>${esc(e.food||e.meal||"Eintrag")}</strong><div class="meta">${timeLabel(e.t)}${e.meal?" · "+esc(e.meal):""}${e.hunger?" · Hunger: "+esc(e.hunger):""}</div></div><button class="ghost small" data-del="${e.id}" aria-label="Eintrag löschen">Löschen</button></div>`
+          +((e.prefeel||[]).length?`<div style="margin-bottom:4px">${(e.prefeel||[]).map(f=>`<span class="tag" style="background:var(--feel-bg);color:var(--feel)">${esc(f)}</span>`).join("")}</div>`:"")
+          +(e.vorgefuehl?`<p class="note" style="color:var(--feel);background:var(--feel-bg);border-radius:8px;padding:6px 10px;font-style:italic">Vorher: ${esc(e.vorgefuehl)}</p>`:"")
+          +(e.feel||[]).map(f=>`<span class="tag c${Math.max(0,FEELS.indexOf(f))%8}">${esc(f)}</span>`).join("")
+          +(e.note?`<p class="note">${esc(e.note)}</p>`:"")+`</div>`;
+      }
+    });
+    list.innerHTML=html;
+  }
+  patterns();
+}
+
+function patterns(){
+  const box=$("patterns");
+  if(entries.length<4){box.innerHTML='<p class="empty">Muster zeigen sich ab etwa vier Einträgen. Bis dahin reicht es, einfach zu notieren.</p>';return}
+  const feelCount={},pair={},foodCount={},preFeelCount={},preFoodPair={};
+  entries.forEach(e=>{
+    const foods=(e.food||"").toLowerCase().split(/,|\bund\b/).map(s=>s.trim()).filter(s=>s.length>1);
+    foods.forEach(f=>{foodCount[f]=(foodCount[f]||0)+1;(e.feel||[]).forEach(x=>{const k=f+"|"+x;pair[k]=(pair[k]||0)+1})});
+    (e.feel||[]).forEach(x=>feelCount[x]=(feelCount[x]||0)+1);
+    (e.prefeel||[]).forEach(x=>{
+      preFeelCount[x]=(preFeelCount[x]||0)+1;
+      foods.forEach(f=>{const k=x+"|"+f;preFoodPair[k]=(preFoodPair[k]||0)+1});
+    });
+  });
+  const top=Object.entries(feelCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const links=Object.entries(pair).filter(([k,n])=>n>=2).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const topPre=Object.entries(preFeelCount).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  const preLinks=Object.entries(preFoodPair).filter(([k,n])=>n>=2).sort((a,b)=>b[1]-a[1]).slice(0,3);
+  let h="<ul class='pat'>";
+  if(topPre.length)h+=`<li>Häufige Gefühle <strong>vor dem Essen</strong>: ${topPre.map(([f,n])=>`<strong>${esc(f)}</strong> (${n}×)`).join(", ")}.</li>`;
+  preLinks.forEach(([k,n])=>{const [x,f]=k.split("|");h+=`<li>Bei <strong>${esc(x)}</strong> vor dem Essen hast du ${n}× <strong>${esc(f)}</strong> gegessen.</li>`});
+  if(top.length)h+=`<li>Am häufigsten <strong>nach dem Essen</strong>: ${top.map(([f,n])=>`<strong>${esc(f)}</strong> (${n}×)`).join(", ")}.</li>`;
+  links.forEach(([k,n])=>{const [f,x]=k.split("|");h+=`<li>Nach <strong>${esc(f)}</strong> hast du ${n}× „${esc(x)}“ notiert.</li>`});
+  if(!links.length&&!preLinks.length)h+="<li>Sobald sich Gefühle und Speisen wiederholen, erscheinen hier Zusammenhänge.</li>";
+  box.innerHTML=h+"</ul>";
+}
+
+$("list").addEventListener("click",ev=>{
+  const id=ev.target.getAttribute("data-del");
+  if(id&&confirm("Diesen Eintrag löschen?")){gone.push(Number(id));entries=entries.filter(e=>String(e.id)!==id);persist();render()}
+});
+$("clear").onclick=()=>{if(entries.length&&confirm("Wirklich alle Einträge löschen?")){gone.push(...entries.map(e=>e.id));entries=[];persist();render()}};
+$("copy").onclick=async()=>{
+  const txt=entries.map(e=>`${dayLabel(e.t)} ${timeLabel(e.t)} | ${e.meal||""} | ${e.food} | Hunger: ${e.hunger||"-"} | Danach: ${(e.feel||[]).join(", ")||"-"} | ${e.note||""}`).join("\n");
+  try{await navigator.clipboard.writeText(txt);$("copy").textContent="Kopiert"}catch(e){$("copy").textContent="Kopieren nicht möglich"}
+  setTimeout(()=>$("copy").textContent="Als Text kopieren",1800);
+};
+render();setStatus(false);initSync();
+</script>
+</body>
+</html>
